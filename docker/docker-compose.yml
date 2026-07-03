@@ -1,0 +1,30 @@
+version: 3
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ecommerce-shop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  localstack:
+    image: localstack/localstack
+    container_name: localstack_container
+    ports:
+      - '4566:4566' # LocalStack Gateway
+    environment:
+      - SERVICES= s3, sqs
+      - DEFAULT_REGION= us-east-1
+      - DATA_DIR= /tmp/localstack/data
+      - AWS_ACCESS_KEY= testkey
+    volumes:
+      - localstack_data:/var/lib/localstack
+
+volumes:
+  localstack_data:
+  postgres_data:
