@@ -34,7 +34,9 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to get database connection")
 	}
-	defer mainDb.Close()
+	defer func() {
+		_ = mainDb.Close()
+	}()
 	gin.SetMode(cfg.Server.GinMode)
 
 	srv := server.New(cfg, db, &log)
