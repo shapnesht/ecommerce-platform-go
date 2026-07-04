@@ -5,9 +5,9 @@ run:
 lint:
 	golangci-lint run ./...
 migrate-up:
-	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce-shop?ssl-mode=disable" up
+	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce-shop?sslmode=disable" up
 migrate-down:
-	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce-shop?ssl-mode=disable" down
+	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce-shop?sslmode=disable" down
 docker-up:
 	docker compose -f ./docker/docker-compose.yml up -d
 docker-up:
