@@ -6,20 +6,27 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/shapnesht/ecommerce-platform-go/internal/config"
+	"github.com/shapnesht/ecommerce-platform-go/internal/services"
 	"gorm.io/gorm"
 )
 
 type Server struct {
-	config *config.Config
-	db     *gorm.DB
-	logger *zerolog.Logger
+	config         *config.Config
+	db             *gorm.DB
+	logger         *zerolog.Logger
+	authService    *services.AuthService
+	userService    *services.UserService
+	productService *services.ProductService
 }
 
-func New(config *config.Config, db *gorm.DB, logger *zerolog.Logger) *Server {
+func New(config *config.Config, db *gorm.DB, logger *zerolog.Logger, authService *services.AuthService, userService *services.UserService, productService *services.ProductService) *Server {
 	return &Server{
-		config: config,
-		db:     db,
-		logger: logger,
+		config:         config,
+		db:             db,
+		logger:         logger,
+		authService:    authService,
+		userService:    userService,
+		productService: productService,
 	}
 }
 

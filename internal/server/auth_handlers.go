@@ -3,7 +3,6 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/shapnesht/ecommerce-platform-go/internal/dto"
-	"github.com/shapnesht/ecommerce-platform-go/internal/services"
 	"github.com/shapnesht/ecommerce-platform-go/internal/utils"
 )
 
@@ -15,9 +14,7 @@ func (s *Server) register(c *gin.Context) {
 		return
 	}
 
-	authService := services.NewAuthService(s.db, s.config)
-
-	response, err := authService.Register(&req)
+	response, err := s.authService.Register(&req)
 	if err != nil {
 		utils.BadRequestResponse(c, "Registration failed", err)
 		return
@@ -34,9 +31,7 @@ func (s *Server) login(c *gin.Context) {
 		return
 	}
 
-	authService := services.NewAuthService(s.db, s.config)
-
-	response, err := authService.Login(&req)
+	response, err := s.authService.Login(&req)
 	if err != nil {
 		utils.UnauthorizedResponse(c, "Login failed")
 		return
@@ -52,9 +47,7 @@ func (s *Server) refreshToken(c *gin.Context) {
 		utils.BadRequestResponse(c, "invalid format", err)
 	}
 
-	authService := services.NewAuthService(s.db, s.config)
-
-	response, err := authService.RefreshToken(&req)
+	response, err := s.authService.RefreshToken(&req)
 	if err != nil {
 		utils.UnauthorizedResponse(c, "refresh token failed")
 		return
@@ -70,9 +63,7 @@ func (s *Server) logout(c *gin.Context) {
 		utils.BadRequestResponse(c, "invalid format", err)
 	}
 
-	authService := services.NewAuthService(s.db, s.config)
-
-	err := authService.Logout(req.RefreshToken)
+	err := s.authService.Logout(req.RefreshToken)
 	if err != nil {
 		utils.InternalServerErrorResponse(c, "logout failed", err)
 		return
@@ -83,8 +74,7 @@ func (s *Server) logout(c *gin.Context) {
 
 func (s *Server) getProfile(c *gin.Context) {
 	userId := c.GetUint("user_id")
-	userService := services.NewUserService(s.db)
-	profile, err := userService.GetProfile(userId)
+	profile, err := s.userService.GetProfile(userId)
 
 	if err != nil {
 		utils.NotFoundResponse(c, "user not found")
@@ -102,8 +92,7 @@ func (s *Server) updateProfile(c *gin.Context) {
 		utils.BadRequestResponse(c, "invalid update request data", err)
 	}
 
-	userService := services.NewUserService(s.db)
-	profile, err := userService.UpdateProfile(userId, req)
+	profile, err := s.userService.UpdateProfile(userId, req)
 
 	if err != nil {
 		utils.InternalServerErrorResponse(c, "failed to update profile", err)
