@@ -21,9 +21,9 @@ func (s *UploadService) UploadFile(productId uint, file *multipart.FileHeader) (
 		return "", fmt.Errorf("invalid file type :%s", ext)
 	}
 
-	filepath := fmt.Sprintf("/products/%d/%s", productId, fileName)
+	path := fmt.Sprintf("/products/%d/%s", productId, fileName)
 
-	return s.provider.UploadFile(file, filepath)
+	return s.provider.UploadFile(file, path)
 }
 
 func (s *UploadService) DeleteFile(filePath string) error {
