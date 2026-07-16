@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/shapnesht/ecommerce-platform-go/internal/dto"
+	"github.com/shapnesht/ecommerce-platform-go/internal/providers"
+	"github.com/shapnesht/ecommerce-platform-go/internal/services"
 	"github.com/shapnesht/ecommerce-platform-go/internal/utils"
 )
 
@@ -153,4 +155,34 @@ func (s *Server) deleteProduct(c *gin.Context) {
 	}
 
 	utils.SuccessResponse(c, "Product deleted successfully", nil)
+}
+
+func (s *Server) uploadImage(c *gin.Context) {
+	productId, err := strconv.ParseInt(c.Param("id"), 10, 32)
+
+	if err != nil {
+		utils.BadRequestResponse(c, "invalid product id", err)
+		return
+	}
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		utils.BadRequestResponse(c, "no file provided", err)
+		return
+	}
+
+	uploadProvider := providers.NewLocalUploadProvider(s.config.Upload.UploadPath)
+	uploadService := services.NewUploadService(uploadProvider)
+
+	url, err := uploadService.UploadFile(uint(productId), file)
+	if err != nil {
+		utils.InternalServerErrorResponse(c, "unable to upload image", err)
+		return
+	}
+
+	if err := s.productService.AddImage(uint(productId), url, file.Filename); err != nil {
+		utils.InternalServerErrorResponse(c, "unable to add image to product", err)
+	}
+
+	utils.SuccessResponse(c, "file uploaded successfully", map[string]string{"url": url})
 }

@@ -148,6 +148,20 @@ func (s *ProductService) GetProduct(id uint) (*dto.ProductResponse, error) {
 	return &response, nil
 }
 
+func (s *ProductService) AddImage(productId uint, url, altText string) error {
+	var count int64
+	s.db.Model(&models.ProductImage{}).Where("ProductId = ?", productId).Count(&count)
+
+	productImage := &models.ProductImage{
+		ProductId: productId,
+		IsPrimary: count == 0,
+		AltText:   altText,
+		Url:       url,
+	}
+
+	return s.db.Create(productImage).Error
+}
+
 func (s *ProductService) UpdateProduct(id uint, req *dto.UpdateProductRequest) (*dto.ProductResponse, error) {
 	var product models.Product
 	if err := s.db.First(&product, id).Error; err != nil {

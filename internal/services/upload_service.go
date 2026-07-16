@@ -13,6 +13,12 @@ type UploadService struct {
 	provider interfaces.UploadProvider
 }
 
+func NewUploadService(uploadProvider interfaces.UploadProvider) *UploadService {
+	return &UploadService{
+		provider: uploadProvider,
+	}
+}
+
 func (s *UploadService) UploadFile(productId uint, file *multipart.FileHeader) (string, error) {
 	fileName := file.Filename
 	ext := strings.ToLower(filepath.Ext(fileName))
