@@ -5,8 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/shapnesht/ecommerce-platform-go/internal/dto"
-	"github.com/shapnesht/ecommerce-platform-go/internal/providers"
-	"github.com/shapnesht/ecommerce-platform-go/internal/services"
 	"github.com/shapnesht/ecommerce-platform-go/internal/utils"
 )
 
@@ -171,10 +169,7 @@ func (s *Server) uploadImage(c *gin.Context) {
 		return
 	}
 
-	uploadProvider := providers.NewLocalUploadProvider(s.config.Upload.UploadPath)
-	uploadService := services.NewUploadService(uploadProvider)
-
-	url, err := uploadService.UploadFile(uint(productId), file)
+	url, err := s.uploadService.UploadFile(uint(productId), file)
 	if err != nil {
 		utils.InternalServerErrorResponse(c, "unable to upload image", err)
 		return

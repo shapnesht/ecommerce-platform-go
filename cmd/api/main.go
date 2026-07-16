@@ -14,6 +14,7 @@ import (
 	"github.com/shapnesht/ecommerce-platform-go/internal/config"
 	"github.com/shapnesht/ecommerce-platform-go/internal/database"
 	"github.com/shapnesht/ecommerce-platform-go/internal/logger"
+	"github.com/shapnesht/ecommerce-platform-go/internal/providers"
 	"github.com/shapnesht/ecommerce-platform-go/internal/server"
 	"github.com/shapnesht/ecommerce-platform-go/internal/services"
 )
@@ -43,8 +44,9 @@ func main() {
 	authService := services.NewAuthService(db, cfg)
 	userService := services.NewUserService(db)
 	productService := services.NewProductService(db)
+	uploadService := services.NewUploadService(providers.NewLocalUploadProvider(cfg.Upload.UploadPath))
 
-	srv := server.New(cfg, db, &log, authService, userService, productService)
+	srv := server.New(cfg, db, &log, authService, userService, productService, uploadService)
 
 	router := srv.SetupRoutes()
 

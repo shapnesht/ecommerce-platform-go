@@ -17,9 +17,10 @@ type Server struct {
 	authService    *services.AuthService
 	userService    *services.UserService
 	productService *services.ProductService
+	uploadService  *services.UploadService
 }
 
-func New(config *config.Config, db *gorm.DB, logger *zerolog.Logger, authService *services.AuthService, userService *services.UserService, productService *services.ProductService) *Server {
+func New(config *config.Config, db *gorm.DB, logger *zerolog.Logger, authService *services.AuthService, userService *services.UserService, productService *services.ProductService, uploadService *services.UploadService) *Server {
 	return &Server{
 		config:         config,
 		db:             db,
@@ -27,6 +28,7 @@ func New(config *config.Config, db *gorm.DB, logger *zerolog.Logger, authService
 		authService:    authService,
 		userService:    userService,
 		productService: productService,
+		uploadService:  uploadService,
 	}
 }
 
