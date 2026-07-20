@@ -21,9 +21,11 @@ services:
       - SERVICES= s3, sqs
       - DEFAULT_REGION= us-east-1
       - DATA_DIR= /tmp/localstack/data
-      - AWS_ACCESS_KEY= testkey
+      - AWS_ACCESS_KEY= ls-bOqozage-1462-JEDa-woxA-kUguvuVId4d1
+      - LOCALSTACK_AUTH_TOKEN= ls-bOqozage-1462-JEDa-woxA-kUguvuVId4d1
     volumes:
       - localstack_data:/var/lib/localstack
+      - ./init/aws/init-localstack.sh:/etc/localstack/init/ready.d/init.sh
 
 volumes:
   localstack_data:

@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shapnesht/ecommerce-platform-go/internal/config"
 	"github.com/shapnesht/ecommerce-platform-go/internal/database"
+	"github.com/shapnesht/ecommerce-platform-go/internal/interfaces"
 	"github.com/shapnesht/ecommerce-platform-go/internal/logger"
 	"github.com/shapnesht/ecommerce-platform-go/internal/providers"
 	"github.com/shapnesht/ecommerce-platform-go/internal/server"
@@ -44,7 +45,15 @@ func main() {
 	authService := services.NewAuthService(db, cfg)
 	userService := services.NewUserService(db)
 	productService := services.NewProductService(db)
-	uploadService := services.NewUploadService(providers.NewLocalUploadProvider(cfg.Upload.UploadPath))
+	var uploadProvider interfaces.UploadProvider
+
+	if cfg.Upload.UploadProvider == "s3" {
+		uploadProvider = providers.NewS3Provider(cfg)
+	} else {
+		uploadProvider = providers.NewLocalUploadProvider(cfg.Upload.UploadPath)
+	}
+
+	uploadService := services.NewUploadService(uploadProvider)
 
 	srv := server.New(cfg, db, &log, authService, userService, productService, uploadService)
 
