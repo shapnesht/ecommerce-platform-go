@@ -84,6 +84,22 @@ func (s *Server) SetupRoutes() *gin.Engine {
 				productRoutes.POST("/:id/images", s.adminMiddleware(), s.uploadImage)
 			}
 
+			cart := protected.Group("/cart")
+			{
+				cartRoutes := cart
+				cartRoutes.GET("/", s.getCart)
+				cartRoutes.POST("/items", s.addToCart)
+				cartRoutes.PUT("/items/:id", s.updateCartItem)
+				cartRoutes.DELETE("/items/:id", s.removeFromCart)
+			}
+
+			orders := protected.Group("/orders")
+			{
+				orderRoutes := orders
+				orderRoutes.POST("/", s.createOrder)
+				orderRoutes.GET("/", s.getOrders)
+				orderRoutes.GET("/:id", s.getOrder)
+			}
 		}
 
 		api.GET("/products", s.getProducts)
