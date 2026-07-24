@@ -37,11 +37,12 @@ type JWTConfig struct {
 }
 
 type AWSConfig struct {
-	Region       string
-	AccessKeyID  string
-	SecretKey    string
-	S3BucketName string
-	S3Endpoint   string
+	Region         string
+	AccessKeyID    string
+	SecretKey      string
+	S3BucketName   string
+	S3Endpoint     string
+	EventQueueName string
 }
 
 type UploadConfig struct {
@@ -77,11 +78,12 @@ func Load() (*Config, error) {
 			Secret:             GetEnv("JWT_SECRET_KEY", "secretkey"),
 		},
 		AWS: AWSConfig{
-			Region:       GetEnv("AWS_REGION", "us-east-1"),
-			AccessKeyID:  GetEnv("AWS_ACCESS_KEY_ID", "test"),
-			SecretKey:    GetEnv("AWS_SECRET_ACCESS_KEY", "secret"),
-			S3BucketName: GetEnv("AWS_S3_BUCKET_NAME", "ecommerce-uploads"),
-			S3Endpoint:   GetEnv("AWS_S3_ENDPOINT", "localhost:9000"),
+			Region:         GetEnv("AWS_REGION", "us-east-1"),
+			AccessKeyID:    GetEnv("AWS_ACCESS_KEY_ID", "test"),
+			SecretKey:      GetEnv("AWS_SECRET_ACCESS_KEY", "secret"),
+			S3BucketName:   GetEnv("AWS_S3_BUCKET_NAME", "ecommerce-uploads"),
+			S3Endpoint:     GetEnv("AWS_S3_ENDPOINT", "localhost:9000"),
+			EventQueueName: GetEnv("AWS_EventQueueName", "ecommerce-events"),
 		},
 		Upload: UploadConfig{
 			MaxSize:        maxUploadSize,

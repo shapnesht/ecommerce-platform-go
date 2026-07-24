@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shapnesht/ecommerce-platform-go/internal/config"
 	"github.com/shapnesht/ecommerce-platform-go/internal/database"
+	"github.com/shapnesht/ecommerce-platform-go/internal/events"
 	"github.com/shapnesht/ecommerce-platform-go/internal/interfaces"
 	"github.com/shapnesht/ecommerce-platform-go/internal/logger"
 	"github.com/shapnesht/ecommerce-platform-go/internal/providers"
@@ -60,9 +61,15 @@ func main() {
 	defer func() {
 		_ = mainDb.Close()
 	}()
+	ctx := context.Background()
+	eventPublisher, err := events.NewEventPublisher(ctx, &cfg.AWS)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to create event publisher")
+		return
+	}
 	gin.SetMode(cfg.Server.GinMode)
 
-	authService := services.NewAuthService(db, cfg)
+	authService := services.NewAuthService(db, cfg, *eventPublisher)
 	userService := services.NewUserService(db)
 	productService := services.NewProductService(db)
 	cartService := services.NewCartService(db)

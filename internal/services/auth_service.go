@@ -7,20 +7,23 @@ import (
 
 	"github.com/shapnesht/ecommerce-platform-go/internal/config"
 	"github.com/shapnesht/ecommerce-platform-go/internal/dto"
+	"github.com/shapnesht/ecommerce-platform-go/internal/events"
 	"github.com/shapnesht/ecommerce-platform-go/internal/models"
 	"github.com/shapnesht/ecommerce-platform-go/internal/utils"
 	"gorm.io/gorm"
 )
 
 type AuthService struct {
-	db     *gorm.DB
-	config *config.Config
+	db             *gorm.DB
+	config         *config.Config
+	eventPublisher events.EventPublisher
 }
 
-func NewAuthService(db *gorm.DB, config *config.Config) *AuthService {
+func NewAuthService(db *gorm.DB, config *config.Config, eventPublisher events.EventPublisher) *AuthService {
 	return &AuthService{
-		db:     db,
-		config: config,
+		db:             db,
+		config:         config,
+		eventPublisher: eventPublisher,
 	}
 }
 
@@ -113,6 +116,11 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 
 	if err := s.db.Create(&refreshTokenModel).Error; err != nil {
 		return nil, err
+	}
+
+	err = s.eventPublisher.Publish("USER_LOGGED_IN", user, map[string]string{})
+	if err != nil {
+		return nil, fmt.Errorf("unable to publish login message: %w", err)
 	}
 
 	return &dto.AuthResponse{
