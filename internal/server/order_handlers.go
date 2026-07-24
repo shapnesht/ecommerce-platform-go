@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/shapnesht/ecommerce-platform-go/internal/dto"
 	"github.com/shapnesht/ecommerce-platform-go/internal/utils"
 )
 

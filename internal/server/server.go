@@ -5,9 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
+	_ "github.com/shapnesht/ecommerce-platform-go/docs"
 	"github.com/shapnesht/ecommerce-platform-go/internal/config"
 	"github.com/shapnesht/ecommerce-platform-go/internal/services"
 	"gorm.io/gorm"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -44,6 +48,10 @@ func (s *Server) SetupRoutes() *gin.Engine {
 	router.Use(s.corsMiddleware())
 
 	router.GET("/health", s.healthCheck)
+
+	// Add documentation routes
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.StaticFile("/api-docs", "./docs/rapidocs.html")
 
 	router.Static("/uploads", "./uploads")
 

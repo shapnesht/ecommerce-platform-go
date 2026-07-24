@@ -12,3 +12,6 @@ docker-up:
 	docker compose -f ./docker/docker-compose.yml up -d
 docker-up:
 	docker compose -f ./docker/docker-compose.yml down
+docs-generate:
+	mkdir -p docs
+	swag init -g cmd/api/main.go -o docs --parseDependency --parseInternal --exclude .git,docs,docker,db
