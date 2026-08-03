@@ -14,6 +14,7 @@ type Config struct {
 	JWT      JWTConfig
 	AWS      AWSConfig
 	Upload   UploadConfig
+	SMTP     SMTPConfig
 }
 
 type ServerConfig struct {
@@ -45,10 +46,18 @@ type AWSConfig struct {
 	EventQueueName string
 }
 
+type SMTPConfig struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	From     string
+}
+
 type UploadConfig struct {
 	UploadPath string
 	MaxSize    int64
-	// Cab be s3 or local
+	// Can be s3 or local
 	UploadProvider string
 }
 
@@ -58,6 +67,7 @@ func Load() (*Config, error) {
 	jwtExpiry, _ := time.ParseDuration(GetEnv("JWT_EXPIRY", "24h"))
 	refreshTokenExpiry, _ := time.ParseDuration(GetEnv("REFRESH_TOKEN_EXPIRY", "72h"))
 	maxUploadSize, _ := strconv.ParseInt(GetEnv("MAX_UPLOAD_SIZE", "10485760"), 10, 64)
+	smtpPort, _ := strconv.Atoi(GetEnv("SMTP_PORT", "1025"))
 
 	return &Config{
 		Server: ServerConfig{
@@ -89,6 +99,13 @@ func Load() (*Config, error) {
 			MaxSize:        maxUploadSize,
 			UploadPath:     GetEnv("UPLOAD_PATH", "./uploads"),
 			UploadProvider: GetEnv("UPLOAD_PROVIDER", "s3"),
+		},
+		SMTP: SMTPConfig{
+			Host:     GetEnv("SMTP_HOST", "localhost"),
+			Port:     smtpPort,
+			Username: GetEnv("SMTP_USERNAME", ""),
+			Password: GetEnv("SMTP_PASSWORD", ""),
+			From:     GetEnv("SMTP_FROM", "noreply@shop.com"),
 		},
 	}, nil
 
