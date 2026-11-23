@@ -110,6 +110,7 @@ Configuration is read from environment variables (a `.env` file is loaded if pre
 | `SMTP_HOST` / `SMTP_PORT` | `localhost` / `1025` | SMTP server |
 | `SMTP_USERNAME` / `SMTP_PASSWORD` | empty | SMTP credentials |
 | `SMTP_FROM` | `noreply@shop.com` | Sender address |
+| `LOCALSTACK_AUTH_TOKEN` | empty | Read by docker-compose for LocalStack (needed by recent LocalStack images) |
 
 The migration targets in the Makefile use database `ecommerce-shop`, while the config default is `ecommerce_shop`. Set `DB_NAME` to match.
 
